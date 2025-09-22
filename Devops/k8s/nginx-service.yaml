@@ -1,0 +1,184 @@
+# =============================================================================
+# Kubernetes Service 配置文件 - Nginx服务暴露
+# =============================================================================
+# 这个文件定义了一个Service，用于暴露Nginx Deployment的服务
+# 功能：为Nginx Pod提供稳定的访问地址和负载均衡
+# 类型：NodePort（通过节点端口暴露服务）
+
+# API版本说明：
+# - v1 是Service资源的稳定版本
+apiVersion: v1
+
+# 资源类型：Service
+# Service为一组Pod提供稳定的访问地址和负载均衡
+# 即使Pod的IP地址变化，Service的地址保持不变
+kind: Service
+
+# 元数据：定义Service的基本信息
+metadata:
+  # Service的名称，在集群内必须唯一
+  # 命名规范：小写字母、数字、连字符，不能以数字开头
+  name: nginx-service
+  
+  # 标签：用于标识和选择Service
+  labels:
+    app: nginx                    # 应用类型标签
+    component: frontend          # 组件标签
+    service-type: nodeport       # 服务类型标签
+  
+  # 注解：用于存储额外的元数据
+  annotations:
+    description: "NodePort service for Nginx deployment"
+    service.beta.kubernetes.io/description: "Exposes Nginx to external traffic"
+
+# Service的规格定义
+spec:
+  # Service类型：决定服务如何暴露
+  # 可选值：
+  # - ClusterIP: 默认类型，只在集群内部暴露服务
+  # - NodePort: 在每个节点的IP上暴露一个静态端口
+  # - LoadBalancer: 在云提供商处申请负载均衡器（需要云环境支持）
+  # - ExternalName: 通过返回CNAME和它的值暴露服务
+  type: NodePort
+  
+  # 端口配置列表：可以配置多个端口映射
+  ports:
+  # 第一个端口配置（可以添加多个）
+  - name: http                    # 端口名称，可选但推荐（特别是多端口时）
+    
+    # Service端口：集群内部访问Service使用的端口
+    # 集群内其他Pod可以通过 nginx-service:80 访问
+    port: 80
+    
+    # 目标端口：Service将流量转发到Pod的哪个端口
+    # 必须与Pod中containerPort匹配
+    targetPort: 80
+    
+    # 节点端口：在每个节点上暴露的端口
+    # 范围必须在30000-32767之间
+    # 如果不指定，K8s会自动分配一个可用端口
+    nodePort: 30080
+    
+    # 协议类型：TCP或UDP
+    protocol: TCP
+  
+  # 第二个端口配置示例（HTTPS）
+  # - name: https
+  #   port: 443
+  #   targetPort: 443
+  #   nodePort: 30443
+  #   protocol: TCP
+  
+  # 选择器：指定这个Service代理哪些Pod
+  # Service会将流量转发到所有匹配这些标签的Pod
+  # 必须与Pod的metadata.labels匹配
+  selector:
+    app: nginx                    # 代理所有带有app=nginx标签的Pod
+    # 可以添加多个标签进行精确匹配
+    # component: frontend
+  
+  # 会话保持：是否将同一客户端的请求转发到同一个Pod
+  # - None: 默认，不保持会话（使用轮询等算法分发）
+  # - ClientIP: 基于客户端IP的会话保持
+  sessionAffinity: None
+  
+  # 会话保持超时时间（当sessionAffinity不是None时）
+  # sessionAffinityConfig:
+  #   clientIP:
+  #     timeoutSeconds: 10800
+  
+  # 外部流量策略：如何处理外部流量
+  # - Cluster: 流量可以被路由到其他节点的Pod（默认）
+  # - Local: 流量只路由到本地节点的Pod
+  externalTrafficPolicy: Cluster
+  
+  # 健康检查端口（某些云提供商需要）
+  # healthCheckNodePort: 30081
+
+# =============================================================================
+# Service工作原理详解
+# =============================================================================
+#
+# 1. 创建Service后，K8s会：
+#    - 分配一个集群IP地址（如10.96.123.45）
+#    - 在每个节点上打开指定的NodePort（30080）
+#    - 设置iptables/IPVS规则，将流量转发到后端Pod
+#
+# 2. 服务发现机制：
+#    - DNS: Service会获得一个DNS名称（如nginx-service.default.svc.cluster.local）
+#    - 环境变量: K8s会在Pod中注入Service相关的环境变量
+#    - 集群IP: 直接通过分配的虚拟IP访问
+#
+# 3. 负载均衡：
+#    - Service会自动在匹配的Pod之间进行负载均衡
+#    - 支持多种算法：轮询、最少连接等
+#    - 自动剔除不健康的Pod
+#
+# 4.  endpoints：
+#    - Service会自动创建对应的Endpoints对象
+#    - Endpoints包含所有匹配的Pod的IP和端口
+#    - 可以通过 kubectl get endpoints nginx-service 查看
+#
+# =============================================================================
+
+# =============================================================================
+# 常用操作命令（使用此配置文件的示例）
+# =============================================================================
+#
+# 1. 创建Service：
+#    kubectl apply -f nginx-service-详细注释.yaml
+#
+# 2. 查看Service状态：
+#    kubectl get service nginx-service
+#
+# 3. 查看Service详细信息：
+#    kubectl describe service nginx-service
+#
+# 4. 查看Endpoints（后端Pod列表）：
+#    kubectl get endpoints nginx-service
+#
+# 5. 测试集群内访问：
+#    kubectl run test-pod --image=busybox -it --rm -- wget -qO- http://nginx-service
+#
+# 6. 获取Minikube IP：
+#    minikube ip
+#
+# 7. 集群外访问（通过NodePort）：
+#    curl http://<minikube-ip>:30080
+#
+# 8. 查看Service的DNS名称：
+#    kubectl get service nginx-service -o jsonpath='{.metadata.name}.{.metadata.namespace}.svc.cluster.local'
+#
+# 9. 删除Service：
+#    kubectl delete -f nginx-service-详细注释.yaml
+#
+# =============================================================================
+
+# =============================================================================
+# 不同Service类型的使用场景
+# =============================================================================
+#
+# 1. ClusterIP（默认）：
+#    - 场景：集群内部服务通信
+#    - 示例：数据库服务、内部API服务
+#    - 访问方式：service-name.namespace.svc.cluster.local:port
+#
+# 2. NodePort：
+#    - 场景：开发测试环境、简单外部访问
+#    - 示例：Web应用、需要外部访问的服务
+#    - 访问方式：http://node-ip:nodeport
+#
+# 3. LoadBalancer：
+#    - 场景：生产环境、云平台的负载均衡
+#    - 示例：高可用的Web服务、需要云负载均衡的服务
+#    - 要求：需要云提供商支持（AWS、GCP、Azure等）
+#
+# 4. ExternalName：
+#    - 场景：将外部服务映射到集群内部
+#    - 示例：外部数据库、第三方API服务
+#    - 示例配置：
+#      spec:
+#        type: ExternalName
+#        externalName: api.external-service.com
+#
+# =============================================================================
