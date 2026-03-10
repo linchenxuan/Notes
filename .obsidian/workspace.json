@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Devops/k8s/phase1/1.1-docker-core.md",
+                "file": "Devops/k8s/phase3/3.1-statefulset.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "1.1-docker-core"
+              "title": "3.1-statefulset"
             }
           }
         ],
@@ -202,6 +202,12 @@
   },
   "active": "20b30f5c79cf6b8a",
   "lastOpenFiles": [
+    "Devops/k8s/phase2/2.4-namespace-rbac.md",
+    "Devops/k8s/phase2/2.3-configmap-secret-pv.md",
+    "Devops/k8s/phase2/2.2-pod-deployment-service.md",
+    "Devops/k8s/phase2/2.1-cluster-setup.md",
+    "Devops/k8s/phase1/1.2-container-network-storage.md",
+    "Devops/k8s/phase1/1.1-docker-core.md",
     "Devops/k8s/k8s-learning-plan.md",
     "Devops/k8s/阶段6-安全与运维.md",
     "Devops/k8s/README.md",
