@@ -8,35 +8,49 @@
         "type": "tabs",
         "children": [
           {
-            "id": "698d346d2275775e",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "Devops/k8s/阶段1-基础概念掌握.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "阶段1-基础概念掌握"
-            }
-          },
-          {
             "id": "e2971fcd651ec100",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Devops/k8s/README 1.md",
+                "file": "Devops/k8s/k8s-learning-plan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "README 1"
+              "title": "k8s-learning-plan"
+            }
+          },
+          {
+            "id": "c07ce02650b0c25d",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Devops/k8s/k8s-learning-plan.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "k8s-learning-plan"
+            }
+          },
+          {
+            "id": "20b30f5c79cf6b8a",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Devops/k8s/phase1/1.1-docker-core.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "1.1-docker-core"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -186,8 +200,13 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "e2971fcd651ec100",
+  "active": "20b30f5c79cf6b8a",
   "lastOpenFiles": [
+    "Devops/k8s/k8s-learning-plan.md",
+    "Devops/k8s/阶段6-安全与运维.md",
+    "Devops/k8s/README.md",
+    "Devops/k8s/阶段1-基础概念掌握.md",
+    "Devops/k8s/README 1.md",
     "Devops/k8s/阶段2-YAML精通与资源配置.md"
   ]
 }
