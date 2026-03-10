@@ -25,12 +25,14 @@
             "id": "e2971fcd651ec100",
             "type": "leaf",
             "state": {
-              "type": "release-notes",
+              "type": "markdown",
               "state": {
-                "currentVersion": "1.12.4"
+                "file": "Devops/k8s/README 1.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-book-up",
-              "title": "版本说明 1.12.4"
+              "icon": "lucide-file",
+              "title": "README 1"
             }
           }
         ],
@@ -184,7 +186,7 @@
       "obsidian-git:Open Git source control": false
     }
   },
-  "active": "20bf4cc4f907d05d",
+  "active": "e2971fcd651ec100",
   "lastOpenFiles": [
     "Devops/k8s/阶段2-YAML精通与资源配置.md"
   ]
